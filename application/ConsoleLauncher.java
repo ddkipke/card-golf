@@ -7,6 +7,7 @@ import dealer.Dealer;
 import deck.Card;
 import deck.Deck;
 import player.Hand;
+import player.Hand.Position;
 
 public class ConsoleLauncher {
 
@@ -21,12 +22,12 @@ public class ConsoleLauncher {
 		Deck deck = Deck.createShuffledDeck();
 		List<Hand> hands = Dealer.deal(deck, numberPlayers);
 
-		int totalLengthToClear = 0;
+//		int totalLengthToClear = 0;
 		for (int i = 0; i < hands.size(); i++) {
 			String handIdentifier = "Player: " + i;
-			String southCard = "South: " + hands.get(i).getCard(Hand.Position.SOUTH);
-			String eastCard = "East: " + hands.get(i).getCard(Hand.Position.EAST);
-			totalLengthToClear += handIdentifier.length() + southCard.length() + eastCard.length();
+			String southCard = "SOUTH: " + hands.get(i).getCard(Hand.Position.SOUTH);
+			String eastCard =  "WEST:  " + hands.get(i).getCard(Hand.Position.EAST);
+//			totalLengthToClear += handIdentifier.length() + southCard.length() + eastCard.length();
 			
 			System.out.println(handIdentifier);
 			System.out.println(southCard);
@@ -58,7 +59,14 @@ public class ConsoleLauncher {
 		}
 		
 		for (int player = 0; player < numberPlayers; player++) {
-			System.out.println("Player: " + player + " Score: " + hands.get(player).getScore());
+			Hand hand = hands.get(player);
+			System.out.println("Player: " + player);
+			System.out.println("Cards:");
+			System.out.println(hand.getCard(Position.NORTH));
+			System.out.println(hand.getCard(Position.EAST));
+			System.out.println(hand.getCard(Position.SOUTH));
+			System.out.println(hand.getCard(Position.WEST));
+			System.out.println("Score: " + hand.getScore());
 		}
 		
 		inputScanner.close();
@@ -80,12 +88,13 @@ public class ConsoleLauncher {
 			Hand.Position position = getPositionFromInput(inputScanner);
 			Card cardToSwapOut = hands.get(player).getCard(position);
 			hands.get(player).setCard(position, kitty);
+			System.out.println("You placed a " + cardToSwapOut + " in the " + position);
 			kitty = cardToSwapOut;
 			System.out.println("You discarded a " + cardToSwapOut);
 		} else {
 			System.out.println("Location to reveal? (n, e, s, w)");
 			Hand.Position position = getPositionFromInput(inputScanner);
-			System.out.println("You revealed a " + hands.get(player).getCard(position));
+			System.out.println("You revealed a " + hands.get(player).getCard(position) + " in the " + position);
 		}
 		return kitty;
 	}
@@ -114,9 +123,15 @@ public class ConsoleLauncher {
 
 	private static boolean yesNoQuestion(Scanner inputScanner, String question) {
 		System.out.println(question + "(y/n)");
-		String drawResponse = inputScanner.next();
-		boolean equals = drawResponse.equals("y");
-		return equals;
+		String response = inputScanner.next();
+		
+		if (response.equals("y")) {
+			return true;
+		} else if (response.equals("n")) {
+			return false;
+		} else {
+			return yesNoQuestion(inputScanner, question);
+		}
 	}
 
 }
