@@ -18,16 +18,6 @@ public class Hand {
 		WEST
 	};
 	
-	private Map<Position, Card> cards = new HashMap<Position, Card>();
-	
-	public void setCard(Position position, Card card) {
-		this.cards.put(position, card);
-	}
-
-	public Card getCard(Position position) {
-		return this.cards.get(position);
-	}
-
 	private class ScoreTabulator {
 		private Card.CardValue cardValue;
 		private List<Integer> indicesOfMatches;
@@ -43,6 +33,36 @@ public class Hand {
 			}
 			return cardValue.getNumberValue();
 		}
+	}
+	
+	private List<Position> unlockedPositions;
+	private Map<Position, Card> cards = new HashMap<Position, Card>();
+	
+	public Hand() {
+		unlockedPositions = new ArrayList<Position>();
+		for (Position position : Position.values()) {
+			unlockedPositions.add(position);
+		}
+	}
+	
+	public boolean setCard(Position position, Card card) {
+		if (unlockedPositions.contains(position)) {
+			this.cards.put(position, card);
+			return true;
+		}
+		return false;
+	}
+
+	public Card getCard(Position position) {
+		return this.cards.get(position);
+	}
+
+	public List<Position> getUnlockedPositions() {
+		return unlockedPositions;
+	}
+	
+	public void lockPosition(Position position) {
+		this.unlockedPositions.remove(position);
 	}
 	
 	public int getScore() {
@@ -109,5 +129,4 @@ public class Hand {
 			}
 		}
 	}
-
 }

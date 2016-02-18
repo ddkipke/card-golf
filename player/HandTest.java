@@ -1,5 +1,7 @@
 package player;
 
+import java.util.List;
+
 import org.mockito.Mockito;
 
 import deck.Card;
@@ -24,19 +26,49 @@ public class HandTest extends TestCase {
 		northCard = Mockito.mock(Card.class);
 		
 		hand = new Hand();
+		hand.setCard(Hand.Position.NORTH, northCard);
+		hand.setCard(Hand.Position.EAST, eastCard);
+		hand.setCard(Hand.Position.SOUTH, southCard);
+		hand.setCard(Hand.Position.WEST, westCard);
 	}
 	
 	public void testGettersAndSetters() throws Exception {
-		hand.setCard(Hand.Position.NORTH, northCard);
 		assertEquals(northCard, hand.getCard(Position.NORTH));
-		
-		hand.setCard(Hand.Position.EAST, eastCard);
 		assertEquals(eastCard, hand.getCard(Position.EAST));
-		
-		hand.setCard(Hand.Position.SOUTH, southCard);
 		assertEquals(southCard, hand.getCard(Position.SOUTH));
+		assertEquals(westCard, hand.getCard(Position.WEST));
+	}
+	
+	public void testLockedPositions() throws Exception {
+		List<Hand.Position> unlockedPositions = hand.getUnlockedPositions();
+		assertEquals(4, unlockedPositions.size());
+		assertTrue(unlockedPositions.contains(Hand.Position.NORTH));
+		assertTrue(unlockedPositions.contains(Hand.Position.EAST));
+		assertTrue(unlockedPositions.contains(Hand.Position.SOUTH));
+		assertTrue(unlockedPositions.contains(Hand.Position.WEST));
 		
-		hand.setCard(Hand.Position.WEST, westCard);
+		hand.lockPosition(Hand.Position.NORTH);
+		assertEquals(3, unlockedPositions.size());
+		assertFalse(unlockedPositions.contains(Hand.Position.NORTH));
+		assertTrue(unlockedPositions.contains(Hand.Position.EAST));
+		assertTrue(unlockedPositions.contains(Hand.Position.SOUTH));
+		assertTrue(unlockedPositions.contains(Hand.Position.WEST));
+		
+		hand.lockPosition(Hand.Position.WEST);
+		assertEquals(2, unlockedPositions.size());
+		assertFalse(unlockedPositions.contains(Hand.Position.NORTH));
+		assertTrue(unlockedPositions.contains(Hand.Position.EAST));
+		assertTrue(unlockedPositions.contains(Hand.Position.SOUTH));
+		assertFalse(unlockedPositions.contains(Hand.Position.WEST));
+		
+		assertFalse(hand.setCard(Hand.Position.NORTH, eastCard));
+		assertTrue(hand.setCard(Hand.Position.EAST, southCard));
+		assertTrue(hand.setCard(Hand.Position.SOUTH, westCard));
+		assertFalse(hand.setCard(Hand.Position.WEST, northCard));
+		
+		assertEquals(northCard, hand.getCard(Position.NORTH));
+		assertEquals(southCard, hand.getCard(Position.EAST));
+		assertEquals(westCard, hand.getCard(Position.SOUTH));
 		assertEquals(westCard, hand.getCard(Position.WEST));
 	}
 	

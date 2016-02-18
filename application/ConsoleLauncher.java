@@ -22,12 +22,10 @@ public class ConsoleLauncher {
 		Deck deck = Deck.createShuffledDeck();
 		List<Hand> hands = Dealer.deal(deck, numberPlayers);
 
-//		int totalLengthToClear = 0;
 		for (int i = 0; i < hands.size(); i++) {
 			String handIdentifier = "Player: " + i;
+			String eastCard =  "WEST:  " + hands.get(i).getCard(Hand.Position.WEST);
 			String southCard = "SOUTH: " + hands.get(i).getCard(Hand.Position.SOUTH);
-			String eastCard =  "WEST:  " + hands.get(i).getCard(Hand.Position.EAST);
-//			totalLengthToClear += handIdentifier.length() + southCard.length() + eastCard.length();
 			
 			System.out.println(handIdentifier);
 			System.out.println(southCard);
@@ -36,23 +34,14 @@ public class ConsoleLauncher {
 			System.out.println();
 		}
 		
-//		String confirmationString = "Got it? (hit any key)";
-//		System.out.println(confirmationString);
-//		inputScanner.nextByte();
-		
-//		totalLengthToClear += confirmationString.length();
-//		for (int i = 0; i < totalLengthToClear; i++) {
-//			System.out.println('\u0008');
-//		}
-		
 		Card kitty = deck.popTopCard();
 		
-		for (int round = 0; round < 4; round++) {
-			System.out.println("Round: " + round);
+		for (int turn = 0; turn < 4; turn++) {
+			System.out.println("Round: " + turn);
 			for (int player = 0; player < numberPlayers; player++) {
 				System.out.println("Player: " + player);
 				kitty = drawNewKittyIfDesired(inputScanner, deck, kitty);
-				kitty = takeOrRevealDesiredCard(inputScanner, hands, kitty, player);
+				kitty = takeOrRevealDesiredCard(inputScanner, hands.get(player), kitty);
 			}
 			System.out.println();
 			System.out.println();
@@ -81,44 +70,63 @@ public class ConsoleLauncher {
 		}
 		return kitty;
 	}
-
-	private static Card takeOrRevealDesiredCard(Scanner inputScanner, List<Hand> hands, Card kitty, int player) {
+	
+	private static Card takeOrRevealDesiredCard(Scanner inputScanner, Hand hand, Card kitty) {
 		if (yesNoQuestion(inputScanner, "Take kitty?")) {
-			System.out.println("Location to replace? (n, e, s, w)");
-			Hand.Position position = getPositionFromInput(inputScanner);
-			Card cardToSwapOut = hands.get(player).getCard(position);
-			hands.get(player).setCard(position, kitty);
-			System.out.println("You placed a " + cardToSwapOut + " in the " + position);
+			System.out.println("Location to replace? " + getUnlockedPositionsAsFormattedString(hand));
+			Hand.Position position = getPositionFromInput(inputScanner, hand);
+			Card cardToSwapOut = hand.getCard(position);
+			hand.setCard(position, kitty);
+			hand.lockPosition(position);
+			System.out.println("You placed a " + kitty + " in the " + position);
 			kitty = cardToSwapOut;
-			System.out.println("You discarded a " + cardToSwapOut);
+			System.out.println("You discarded a " + kitty);
 		} else {
-			System.out.println("Location to reveal? (n, e, s, w)");
-			Hand.Position position = getPositionFromInput(inputScanner);
-			System.out.println("You revealed a " + hands.get(player).getCard(position) + " in the " + position);
+			System.out.println("Location to reveal? " + getUnlockedPositionsAsFormattedString(hand));
+			Hand.Position position = getPositionFromInput(inputScanner, hand);
+			hand.lockPosition(position);
+			System.out.println("You revealed a " + hand.getCard(position) + " in the " + position);
 		}
 		return kitty;
 	}
 
-	private static Hand.Position getPositionFromInput(Scanner inputScanner) {
-		Hand.Position position;
+	private static String getUnlockedPositionsAsFormattedString(Hand hand) {
+		String formattedString = "";
+		for (Position position : hand.getUnlockedPositions()) {
+			formattedString += "\n" + position.toString();
+		}
+		return formattedString;
+	}
+	
+	private static Hand.Position getPositionFromInput(Scanner inputScanner, Hand hand) {
+		List<Position> unlockedPositions = hand.getUnlockedPositions();
+		
 		switch (inputScanner.next()) {
 		case "n":
-			position = Hand.Position.NORTH;
+			if (unlockedPositions.contains(Hand.Position.NORTH)) {
+				return Hand.Position.NORTH;
+			}
 			break;
 		case "e":
-			position = Hand.Position.EAST;
+			if (unlockedPositions.contains(Hand.Position.EAST)) {
+				return Hand.Position.EAST;
+			}
 			break;
 		case "s":
-			position = Hand.Position.SOUTH;
+			if (unlockedPositions.contains(Hand.Position.SOUTH)) {
+				return Hand.Position.SOUTH;
+			}
 			break;
 		case "w":
-			position = Hand.Position.WEST;
+			if (unlockedPositions.contains(Hand.Position.WEST)) {
+				return Hand.Position.WEST;
+			}
 			break;
 		default:
-			position = Hand.Position.NORTH;
 			break;
 		}
-		return position;
+		System.out.println("That position is locked, try again: ");
+		return getPositionFromInput(inputScanner, hand);
 	}
 
 	private static boolean yesNoQuestion(Scanner inputScanner, String question) {
