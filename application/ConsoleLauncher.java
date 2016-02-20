@@ -15,7 +15,6 @@ import player.PlayerInterface;
 public class ConsoleLauncher {
 
 	public static void main(String[] args) {
-
 		
 		int numberPlayers;
 		System.out.println("Enter number of players:");
@@ -29,33 +28,51 @@ public class ConsoleLauncher {
 		List<Hand> hands = Dealer.deal(deck, numberPlayers);
 		List<PlayerInterface> players = new ArrayList<PlayerInterface>();
 		
-		for (int i = 0; i < hands.size(); i++) {
-			PlayerInterface player = new PlayerHuman(util, hands.get(i), i);
-			player.checkTwoKnownCards();
-			players.add(player);
-		}
-		
-		Card discard = deck.popTopCard();
-		
-		for (int turn = 0; turn < 4; turn++) {
-			System.out.println("Turn: " + turn);
-			for (PlayerInterface player : players) {
-				System.out.println("Player: " + player.getNumber());
-				discard = playersTurnLogic(deck, discard, player);
+		for (int round = 0; round < 9; round++) {
+			
+			for (int i = 0; i < hands.size(); i++) {
+				PlayerInterface player = new PlayerHuman(util, hands.get(i), i + 1);
+				player.checkTwoKnownCards();
+				players.add(player);
 			}
+			
+			Card discard = deck.popTopCard();
+			
+			System.out.println("ROUND " + (round + 1));
+			for (int turn = 0; turn < 4; turn++) {
+				System.out.println("Turn: " + (turn + 1));
+				for (PlayerInterface player : players) {
+					System.out.println("Player: " + player.getNumber());
+					discard = playersTurnLogic(deck, discard, player);
+				}
+				System.out.println();
+				System.out.println();
+			}
+			
+			for (int player = 0; player < numberPlayers; player++) {
+				Hand hand = hands.get(player);
+				System.out.println("Player: " + player);
+				System.out.println("Cards:");
+				System.out.println(hand.getCard(Position.NORTH));
+				System.out.println(hand.getCard(Position.EAST));
+				System.out.println(hand.getCard(Position.SOUTH));
+				System.out.println(hand.getCard(Position.WEST));
+				System.out.println("Score: " + hand.getScore());
+				players.get(player).incrementScore(hand.getScore());
+				System.out.println("Total Score: " + players.get(player).getScore());
+				System.out.println();
+			}
+			
 			System.out.println();
 			System.out.println();
 		}
+
+		System.out.println("***FINAL SCORES***");
 		
 		for (int player = 0; player < numberPlayers; player++) {
-			Hand hand = hands.get(player);
 			System.out.println("Player: " + player);
-			System.out.println("Cards:");
-			System.out.println(hand.getCard(Position.NORTH));
-			System.out.println(hand.getCard(Position.EAST));
-			System.out.println(hand.getCard(Position.SOUTH));
-			System.out.println(hand.getCard(Position.WEST));
-			System.out.println("Score: " + hand.getScore());
+			System.out.println("FinalScore: " + players.get(player).getScore());
+			System.out.println();
 		}
 		
 		inputScanner.close();

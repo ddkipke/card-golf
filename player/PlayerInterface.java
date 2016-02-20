@@ -15,4 +15,8 @@ public interface PlayerInterface {
 	Card swapCards(Card cardToTake);
 	
 	int getNumber();
+	
+	void incrementScore(int increment);
+	
+	int getScore();
 }

@@ -79,4 +79,17 @@ public class PlayerHumanTest extends TestCase {
 		Mockito.verify(hand).setCard(Hand.Position.WEST, cardIn);
 		Mockito.verify(hand).lockPosition(Hand.Position.WEST);
 	}
+	
+	public void testIncrementAndGetScore() throws Exception {
+		assertEquals(0, player.getScore());
+		
+		player.incrementScore(5);
+		assertEquals(5, player.getScore());
+		
+		player.incrementScore(-1);
+		assertEquals(4, player.getScore());
+		
+		player.incrementScore(23);
+		assertEquals(27, player.getScore());
+	}
 }

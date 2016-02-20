@@ -12,11 +12,13 @@ public class PlayerHuman implements PlayerInterface {
 	private final String deckDrawString = "You drew a ";
 	private final String discardTakeString = "The discard contains a ";
 	private final int number;
+	private int score;
 
 	public PlayerHuman(ConsoleUtilities consoleUtil, Hand hand, int number) {
 		this.consoleUtil = consoleUtil;
 		this.hand = hand;
 		this.number = number; 
+		this.score = 0;
 	}
 
 	@Override
@@ -59,6 +61,16 @@ public class PlayerHuman implements PlayerInterface {
 		hand.setCard(position, cardIn);
 		hand.lockPosition(position);
 		return cardOut;
+	}
+	
+	@Override
+	public void incrementScore(int increment) {
+		this.score += increment;
+	}
+	
+	@Override
+	public int getScore() {
+		return score;
 	}
 	
 	public Hand getHand() {
