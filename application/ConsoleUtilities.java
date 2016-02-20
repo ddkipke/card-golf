@@ -27,7 +27,7 @@ public class ConsoleUtilities {
 		}
 	}
 	
-	public String getUnlockedPositionsAsFormattedString(Hand hand) {
+	private String getUnlockedPositionsAsFormattedString(Hand hand) {
 		String formattedString = "";
 		for (Position position : hand.getUnlockedPositions()) {
 			formattedString += "\n" + position.toString();
@@ -35,7 +35,8 @@ public class ConsoleUtilities {
 		return formattedString;
 	}
 	
-	public Hand.Position getPositionFromInput(Hand hand) {
+	public Hand.Position getPositionFromInput(Hand hand, String question) {
+		System.out.println(question + getUnlockedPositionsAsFormattedString(hand));
 		List<Position> unlockedPositions = hand.getUnlockedPositions();
 		
 		switch (this.scanner.next()) {
@@ -63,6 +64,6 @@ public class ConsoleUtilities {
 			break;
 		}
 		System.out.println("That position is locked, try again: ");
-		return this.getPositionFromInput(hand);
+		return this.getPositionFromInput(hand, question);
 	}
 }

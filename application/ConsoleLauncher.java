@@ -1,5 +1,6 @@
 package application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,6 +9,8 @@ import deck.Card;
 import deck.Deck;
 import player.Hand;
 import player.Hand.Position;
+import player.PlayerHuman;
+import player.PlayerInterface;
 
 public class ConsoleLauncher {
 
@@ -22,28 +25,23 @@ public class ConsoleLauncher {
 
 		System.out.println("Number of players: " + numberPlayers);
 		Deck deck = Deck.createShuffledDeck();
+		
 		List<Hand> hands = Dealer.deal(deck, numberPlayers);
-
+		List<PlayerInterface> players = new ArrayList<PlayerInterface>();
+		
 		for (int i = 0; i < hands.size(); i++) {
-			String handIdentifier = "Player: " + i;
-			String eastCard =  "WEST:  " + hands.get(i).getCard(Hand.Position.WEST);
-			String southCard = "SOUTH: " + hands.get(i).getCard(Hand.Position.SOUTH);
-			
-			System.out.println(handIdentifier);
-			System.out.println(southCard);
-			System.out.println(eastCard);
-			System.out.println();
-			System.out.println();
+			PlayerInterface player = new PlayerHuman(util, hands.get(i), i);
+			player.checkTwoKnownCards();
+			players.add(player);
 		}
 		
-		Card kitty = deck.popTopCard();
+		Card discard = deck.popTopCard();
 		
 		for (int turn = 0; turn < 4; turn++) {
-			System.out.println("Round: " + turn);
-			for (int player = 0; player < numberPlayers; player++) {
-				System.out.println("Player: " + player);
-				kitty = drawNewKittyIfDesired(inputScanner, deck, kitty, util);
-				kitty = takeOrRevealDesiredCard(inputScanner, hands.get(player), kitty, util);
+			System.out.println("Turn: " + turn);
+			for (PlayerInterface player : players) {
+				System.out.println("Player: " + player.getNumber());
+				discard = playersTurnLogic(deck, discard, player);
 			}
 			System.out.println();
 			System.out.println();
@@ -64,34 +62,19 @@ public class ConsoleLauncher {
 		
 	}
 
-	private static Card drawNewKittyIfDesired(Scanner inputScanner, Deck deck, Card kitty, ConsoleUtilities util) {
-		System.out.println("Kitty: " + kitty);
-		if (util.yesNoQuestion("Draw a different card?")) {
-			kitty = deck.popTopCard();
-			System.out.println("New kitty: " + kitty);
-		}
-		return kitty;
-	}
-	
-	private static Card takeOrRevealDesiredCard(Scanner inputScanner, Hand hand, Card kitty, ConsoleUtilities util) {
-		if (util.yesNoQuestion("Take kitty?")) {
-			System.out.println("Location to replace? " + util.getUnlockedPositionsAsFormattedString(hand));
-			Hand.Position position = util.getPositionFromInput(hand);
-			Card cardToSwapOut = hand.getCard(position);
-			hand.setCard(position, kitty);
-			hand.lockPosition(position);
-			System.out.println("You placed a " + kitty + " in the " + position);
-			kitty = cardToSwapOut;
-			System.out.println("You discarded a " + kitty);
+	private static Card playersTurnLogic(Deck deck, Card discard, PlayerInterface player) {
+		if (player.wantsCardFromDiscard(discard)) {
+			discard = player.swapCards(discard);
+			return discard;
 		} else {
-			System.out.println("Location to reveal? " + util.getUnlockedPositionsAsFormattedString(hand));
-			Hand.Position position = util.getPositionFromInput(hand);
-			hand.lockPosition(position);
-			System.out.println("You revealed a " + hand.getCard(position) + " in the " + position);
+			discard = deck.popTopCard();
 		}
-		return kitty;
+		
+		if (player.wantsCardFromTopOfDeck(discard)) {
+			discard = player.swapCards(discard);
+		} else {
+			player.revealCard();
+		}
+		return discard;
 	}
-
-	
-
 }
