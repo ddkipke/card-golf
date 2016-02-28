@@ -31,7 +31,7 @@ public class ConsoleLauncher {
 		for (int round = 0; round < CommonProperties.NUMBER_ROUNDS; round++) {
 			
 			for (int i = 0; i < hands.size(); i++) {
-				PlayerInterface player = new PlayerHuman(util, hands.get(i), i + 1);
+				PlayerInterface player = new PlayerHuman(util, hands.get(i), new Integer(i+1).toString());
 				player.checkTwoKnownCards();
 				players.add(player);
 			}
@@ -59,7 +59,7 @@ public class ConsoleLauncher {
 				System.out.println(hand.getCard(Position.WEST));
 				System.out.println("Score: " + hand.getScore());
 				players.get(player).incrementScore(hand.getScore());
-				System.out.println("Total Score: " + players.get(player).getScore());
+				System.out.println("Total Score: " + players.get(player).getScoreForCurrentRound());
 				System.out.println();
 			}
 			
@@ -71,7 +71,7 @@ public class ConsoleLauncher {
 		
 		for (int player = 0; player < numberPlayers; player++) {
 			System.out.println("Player: " + player);
-			System.out.println("FinalScore: " + players.get(player).getScore());
+			System.out.println("FinalScore: " + players.get(player).getScoreForCurrentRound());
 			System.out.println();
 		}
 		

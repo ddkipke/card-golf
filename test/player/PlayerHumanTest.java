@@ -1,7 +1,5 @@
 package player;
 
-import java.util.Random;
-
 import org.mockito.Mockito;
 
 import application.ConsoleUtilities;
@@ -13,7 +11,7 @@ public class PlayerHumanTest extends TestCase {
 	private PlayerHuman player;
 	private ConsoleUtilities consoleUtil;
 	private Hand hand;
-	private int number;
+	private String number;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -21,8 +19,7 @@ public class PlayerHumanTest extends TestCase {
 		
 		consoleUtil = Mockito.mock(ConsoleUtilities.class);
 		hand = Mockito.mock(Hand.class);
-		Random random = new Random(System.currentTimeMillis());
-		number = random.nextInt();
+		number = "some name";
 		player = new PlayerHuman(consoleUtil, hand, number);
 	}
 	
@@ -81,15 +78,15 @@ public class PlayerHumanTest extends TestCase {
 	}
 	
 	public void testIncrementAndGetScore() throws Exception {
-		assertEquals(0, player.getScore());
+		assertEquals(0, player.getScoreForCurrentRound());
 		
 		player.incrementScore(5);
-		assertEquals(5, player.getScore());
+		assertEquals(5, player.getScoreForCurrentRound());
 		
 		player.incrementScore(-1);
-		assertEquals(4, player.getScore());
+		assertEquals(4, player.getScoreForCurrentRound());
 		
 		player.incrementScore(23);
-		assertEquals(27, player.getScore());
+		assertEquals(27, player.getScoreForCurrentRound());
 	}
 }

@@ -13,13 +13,13 @@ public class PlayerHuman implements PlayerInterface {
 	private final String discardTakeString = "The discard contains a ";
 	private final String revealQuestion = "Which position do you want to reveal?";
 	private final String discardQuestion = "Which card do you want to discard?";
-	private final int number;
+	private final String name;
 	private int score;
 
-	public PlayerHuman(ConsoleUtilities consoleUtil, Hand hand, int number) {
+	public PlayerHuman(ConsoleUtilities consoleUtil, Hand hand, String name) {
 		this.consoleUtil = consoleUtil;
 		this.hand = hand;
-		this.number = number; 
+		this.name = name; 
 		this.score = 0;
 	}
 
@@ -35,7 +35,7 @@ public class PlayerHuman implements PlayerInterface {
 
 	@Override
 	public void checkTwoKnownCards() {
-		String handIdentifier = "Player: " + number;
+		String handIdentifier = "Player: " + name;
 		String eastCard =  "WEST:  " + hand.getCard(Hand.Position.WEST);
 		String southCard = "SOUTH: " + hand.getCard(Hand.Position.SOUTH);
 		
@@ -69,7 +69,7 @@ public class PlayerHuman implements PlayerInterface {
 	}
 	
 	@Override
-	public int getScore() {
+	public int getScoreForCurrentRound() {
 		return score;
 	}
 	
@@ -82,7 +82,7 @@ public class PlayerHuman implements PlayerInterface {
 	}
 
 	@Override
-	public int getNumber() {
-		return this.number;
+	public String getNumber() {
+		return this.name;
 	}
 }
