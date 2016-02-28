@@ -28,7 +28,7 @@ public class ConsoleLauncher {
 		List<Hand> hands = Dealer.deal(deck, numberPlayers);
 		List<PlayerInterface> players = new ArrayList<PlayerInterface>();
 		
-		for (int round = 0; round < 9; round++) {
+		for (int round = 0; round < CommonProperties.NUMBER_ROUNDS; round++) {
 			
 			for (int i = 0; i < hands.size(); i++) {
 				PlayerInterface player = new PlayerHuman(util, hands.get(i), i + 1);
@@ -39,7 +39,7 @@ public class ConsoleLauncher {
 			Card discard = deck.popTopCard();
 			
 			System.out.println("ROUND " + (round + 1));
-			for (int turn = 0; turn < 4; turn++) {
+			for (int turn = 0; turn < CommonProperties.NUMBER_TURNS; turn++) {
 				System.out.println("Turn: " + (turn + 1));
 				for (PlayerInterface player : players) {
 					System.out.println("Player: " + player.getNumber());

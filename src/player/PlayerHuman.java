@@ -11,6 +11,8 @@ public class PlayerHuman implements PlayerInterface {
 	private final String takeItQuestion = ". Do you want to take it?";
 	private final String deckDrawString = "You drew a ";
 	private final String discardTakeString = "The discard contains a ";
+	private final String revealQuestion = "Which position do you want to reveal?";
+	private final String discardQuestion = "Which card do you want to discard?";
 	private final int number;
 	private int score;
 
@@ -45,7 +47,6 @@ public class PlayerHuman implements PlayerInterface {
 
 	@Override
 	public void revealCard() {
-		String revealQuestion = "Which position do you want to reveal?";
 		Position positionToReveal = consoleUtil.getPositionFromInput(hand, revealQuestion);
 		System.out.println("You revealed a " + hand.getCard(positionToReveal) +
 				" in the " + positionToReveal);
@@ -54,7 +55,6 @@ public class PlayerHuman implements PlayerInterface {
 
 	@Override
 	public Card swapCards(Card cardIn) {
-		String discardQuestion = "Which card do you want to discard?";
 		Position position = consoleUtil.getPositionFromInput(hand, discardQuestion);
 		Card cardOut = hand.getCard(position);
 		System.out.println("You discarded a " + cardOut);
