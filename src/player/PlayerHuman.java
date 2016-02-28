@@ -7,20 +7,18 @@ import player.Hand.Position;
 public class PlayerHuman implements PlayerInterface {
 
 	private final ConsoleUtilities consoleUtil;
-	private final Hand hand;
+	private Hand hand;
 	private final String takeItQuestion = ". Do you want to take it?";
 	private final String deckDrawString = "You drew a ";
 	private final String discardTakeString = "The discard contains a ";
 	private final String revealQuestion = "Which position do you want to reveal?";
 	private final String discardQuestion = "Which card do you want to discard?";
 	private final String name;
-	private int score;
 
 	public PlayerHuman(ConsoleUtilities consoleUtil, Hand hand, String name) {
 		this.consoleUtil = consoleUtil;
 		this.hand = hand;
 		this.name = name; 
-		this.score = 0;
 	}
 
 	@Override
@@ -64,13 +62,8 @@ public class PlayerHuman implements PlayerInterface {
 	}
 	
 	@Override
-	public void incrementScore(int increment) {
-		this.score += increment;
-	}
-	
-	@Override
 	public int getScoreForCurrentRound() {
-		return score;
+		return this.hand.getScore();
 	}
 	
 	public Hand getHand() {
@@ -82,7 +75,12 @@ public class PlayerHuman implements PlayerInterface {
 	}
 
 	@Override
-	public String getNumber() {
+	public String getName() {
 		return this.name;
+	}
+
+	@Override
+	public void setNewHand(Hand newHand) {
+		this.hand = newHand;
 	}
 }

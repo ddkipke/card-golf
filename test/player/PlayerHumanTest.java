@@ -26,7 +26,13 @@ public class PlayerHumanTest extends TestCase {
 	public void testGetters() throws Exception {
 		assertSame(consoleUtil, player.getConsoleUtilities());
 		assertSame(hand, player.getHand());
-		assertEquals(number, player.getNumber());
+		assertEquals(number, player.getName());
+	}
+	
+	public void testResetHand() throws Exception {
+		Hand newHand = Mockito.mock(Hand.class);
+		player.setNewHand(newHand);
+		assertSame(newHand, player.getHand());
 	}
 	
 	public void testWantsCardFromDiscard() throws Exception {
@@ -77,16 +83,14 @@ public class PlayerHumanTest extends TestCase {
 		Mockito.verify(hand).lockPosition(Hand.Position.WEST);
 	}
 	
-	public void testIncrementAndGetScore() throws Exception {
+	public void testGetScore() throws Exception {
 		assertEquals(0, player.getScoreForCurrentRound());
+
+		Mockito.when(hand.getScore()).thenReturn(34);
+		assertEquals(34, player.getScoreForCurrentRound());
 		
-		player.incrementScore(5);
-		assertEquals(5, player.getScoreForCurrentRound());
+		Mockito.when(hand.getScore()).thenReturn(-10);
+		assertEquals(-10, player.getScoreForCurrentRound());
 		
-		player.incrementScore(-1);
-		assertEquals(4, player.getScoreForCurrentRound());
-		
-		player.incrementScore(23);
-		assertEquals(27, player.getScoreForCurrentRound());
 	}
 }

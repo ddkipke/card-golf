@@ -14,9 +14,11 @@ public interface PlayerInterface {
 	
 	Card swapCards(Card cardToTake);
 	
-	String getNumber();
-	
-	void incrementScore(int increment);
+	String getName();
 	
 	int getScoreForCurrentRound();
+	
+	Hand getHand();
+	
+	void setNewHand(Hand hand);
 }

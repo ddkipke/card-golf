@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import application.Scoreboard.PlayerScore;
 import dealer.Dealer;
 import deck.Card;
 import deck.Deck;
@@ -23,17 +24,22 @@ public class ConsoleLauncher {
 		numberPlayers = inputScanner.nextInt();
 
 		System.out.println("Number of players: " + numberPlayers);
-		Deck deck = Deck.createShuffledDeck();
 		
-		List<Hand> hands = Dealer.deal(deck, numberPlayers);
 		List<PlayerInterface> players = new ArrayList<PlayerInterface>();
 		
+		for (int i = 0; i < numberPlayers; i++) {
+			players.add(new PlayerHuman(util, null, new Integer(i+1).toString()));
+		}
+
+		Scoreboard scoreboard = new Scoreboard(players);
+		
 		for (int round = 0; round < CommonProperties.NUMBER_ROUNDS; round++) {
+			Deck deck = Deck.createShuffledDeck();
+			List<Hand> hands = Dealer.deal(deck, numberPlayers);
 			
 			for (int i = 0; i < hands.size(); i++) {
-				PlayerInterface player = new PlayerHuman(util, hands.get(i), new Integer(i+1).toString());
-				player.checkTwoKnownCards();
-				players.add(player);
+				players.get(i).setNewHand(hands.get(i));
+				players.get(i).checkTwoKnownCards();
 			}
 			
 			Card discard = deck.popTopCard();
@@ -42,24 +48,29 @@ public class ConsoleLauncher {
 			for (int turn = 0; turn < CommonProperties.NUMBER_TURNS; turn++) {
 				System.out.println("Turn: " + (turn + 1));
 				for (PlayerInterface player : players) {
-					System.out.println("Player: " + player.getNumber());
+					System.out.println("Player: " + player.getName());
 					discard = playersTurnLogic(deck, discard, player);
 				}
 				System.out.println();
 				System.out.println();
 			}
 			
-			for (int player = 0; player < numberPlayers; player++) {
-				Hand hand = hands.get(player);
-				System.out.println("Player: " + player);
+			scoreboard.incrementTotalScores();
+			PlayerScore[] scores = scoreboard.getOrderedPlayerScores();
+			
+			for (PlayerScore score : scores) {
+				
+				PlayerInterface player = score.getPlayer();
+				Hand hand = player.getHand();
+				
+				System.out.println("Player: " + player.getName());
 				System.out.println("Cards:");
 				System.out.println(hand.getCard(Position.NORTH));
 				System.out.println(hand.getCard(Position.EAST));
 				System.out.println(hand.getCard(Position.SOUTH));
 				System.out.println(hand.getCard(Position.WEST));
-				System.out.println("Score: " + hand.getScore());
-				players.get(player).incrementScore(hand.getScore());
-				System.out.println("Total Score: " + players.get(player).getScoreForCurrentRound());
+				System.out.println("Score: " + player.getScoreForCurrentRound());
+				System.out.println("Total Score: " + score.getTotalScore());
 				System.out.println();
 			}
 			
@@ -69,9 +80,10 @@ public class ConsoleLauncher {
 
 		System.out.println("***FINAL SCORES***");
 		
-		for (int player = 0; player < numberPlayers; player++) {
-			System.out.println("Player: " + player);
-			System.out.println("FinalScore: " + players.get(player).getScoreForCurrentRound());
+		PlayerScore[] scores = scoreboard.getOrderedPlayerScores();
+		for (PlayerScore score : scores) {
+			System.out.println("Player: " + score.getPlayer().getName());
+			System.out.println("FinalScore: " + score.getTotalScore());
 			System.out.println();
 		}
 		
