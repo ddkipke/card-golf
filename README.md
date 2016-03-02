@@ -1,6 +1,8 @@
 # card-golf
 A playing card game for 2-6 players, where the goal is to get the lowest score possible.
 
+RULES:
+
 Each player is dealt 4 cards, face down. They may only look at the value of two of the cards.
 This is their "hand". They arrange the cards in a square on the table and leave them like that throughout the round.
 
@@ -20,3 +22,6 @@ Pairs cancel out to a score of zero between them, triples result in -1, and quad
 Threes are wild, and can be matched with any other card or set of cards.
 
 Play continues for nine rounds. The player with the lowest cumulative score from all nine rounds is the winner.
+
+FEATURES:
+Only human players are possible right now. Computer players coming soon.
