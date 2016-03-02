@@ -14,6 +14,19 @@ public class ConsoleUtilities {
 		this.scanner = scanner;
 	}
 	
+	public int getNumberOfPlayers() {
+		int numberPlayers;
+		System.out.println("Enter number of players:");
+		numberPlayers = this.scanner.nextInt();
+		if (numberPlayers < 2 || numberPlayers > 6) {
+			System.out.println("Must be between 2 and 6, inclusive");
+			return getNumberOfPlayers();
+		}
+
+		System.out.println("Number of players: " + numberPlayers);
+		return numberPlayers;
+	}
+	
 	public boolean yesNoQuestion(String question) {
 		System.out.println(question + "(y/n)");
 		String response = this.scanner.next();
