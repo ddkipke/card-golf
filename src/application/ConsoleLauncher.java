@@ -8,8 +8,6 @@ import application.Scoreboard.PlayerScore;
 import dealer.Dealer;
 import deck.Card;
 import deck.Deck;
-import player.Hand;
-import player.Hand.Position;
 import player.PlayerHuman;
 import player.PlayerInterface;
 
@@ -43,10 +41,9 @@ public class ConsoleLauncher {
 
 	private static void doRound(List<PlayerInterface> players, Scoreboard scoreboard, int round) {
 		Deck deck = Deck.createShuffledDeck();
-		List<Hand> hands = Dealer.deal(deck, players.size());
+		Dealer.deal(deck, players);
 		
-		for (int i = 0; i < hands.size(); i++) {
-			players.get(i).setNewHand(hands.get(i));
+		for (int i = 0; i < players.size(); i++) {
 			players.get(i).checkTwoKnownCards();
 		}
 		

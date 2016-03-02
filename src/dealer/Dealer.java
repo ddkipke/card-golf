@@ -6,23 +6,26 @@ import java.util.List;
 import deck.Deck;
 import player.Hand;
 import player.Hand.Position;
+import player.PlayerInterface;
 
 public class Dealer {
 
-	public static List<Hand> deal(Deck deck, int numberHands) {
+	public static void deal(Deck deck, List<PlayerInterface> players) {
 		
-		List<Hand> hands = new ArrayList<Hand>();
 		Position[] cardPositions = Hand.Position.values();
 		
-		for (int handCount = 0; handCount < numberHands; handCount++) {
-			hands.add(new Hand());
+		List<Hand> hands = new ArrayList<Hand>();
+		
+		for (int player = 0; player < players.size(); player++) {
+			Hand hand = new Hand();
+			hands.add(hand);
+			players.get(player).setNewHand(hand);
 		}
 		for (int position = 0; position < cardPositions.length; position++) {
-			for (int handCount = 0; handCount < numberHands; handCount++) {
-				hands.get(handCount).setCard(cardPositions[position], deck.popTopCard());
+			for (int hand = 0; hand < hands.size(); hand++) {
+				hands.get(hand).setCard(cardPositions[position], deck.popTopCard());
 			}
 		}
-		return hands;
 	}
 
 }
